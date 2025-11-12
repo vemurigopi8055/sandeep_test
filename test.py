@@ -23,9 +23,15 @@ if file:
     f_name=st.text_input("Family Head Name")
     category=st.text_input("Enter Category Name") 
     if st.button("Button"):
-        v = dataset[
-        (dataset["Village Name"] == v_name) |
-        (dataset["Family Head Name"] == f_name) |
-        (dataset["Catagiry"] == category)]
+        if v_name and f_name and category:
+            v = dataset[
+            (dataset["Village Name"] == v_name) &
+            (dataset["Family Head Name"] == f_name) &
+            (dataset["Catagiry"] == category)]
+        else:
+            v = dataset[
+            (dataset["Village Name"] == v_name) |
+            (dataset["Family Head Name"] == f_name) |
+            (dataset["Catagiry"] == category)]
         st.write("Data")
         st.dataframe(v)
