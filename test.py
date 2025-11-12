@@ -1,28 +1,31 @@
-import streamlit as st
 import pandas as pd
-
-# Title
-st.title("📂 CSV File Uploader")
-
-# File uploader widget
-uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
-
-# Check if a file is uploaded
-if uploaded_file is not None:
-    # Read the CSV file
-    df = pd.read_csv(uploaded_file)
-    
-    # Show file details
-    st.subheader("File Details")
-    st.write(f"Filename: {uploaded_file.name}")
-    st.write(f"File size: {uploaded_file.size / 1024:.2f} KB")
-
-    # Display dataframe
-    st.subheader("📊 Data Preview")
-    st.dataframe(df)
-
-    # Optionally show summary
-    if st.checkbox("Show summary statistics"):
-        st.write(df.describe())
-else:
-    st.info("Please upload a CSV file to continue.")
+import streamlit as st
+file = st.file_uploader("Upload the excel file")
+if file:
+    df = pd.read_excel(file, header = [1,2,3])
+    columns = []
+    for i in df.columns:
+        if "Unnamed" in i[1]:
+            col_name = i[0]
+        elif "Unnamed" in i[2]:
+            col_name = "_".join([i[0], i[1]])
+            if "Rs." in col_name:
+                col_name = columns[-1]+"_Rs."
+            elif "Value" in col_name:
+                col_name = columns[-1]+"_Value"
+        else:
+            col_name = "_".join([i[0], i[1], i[2]])
+        columns.append(col_name)
+    dataset = pd.read_excel("sandeep.xlsx", header=None)
+    dataset.drop(index=[0,1,2,3], axis = 0, inplace = True)
+    dataset.columns = columns
+    v_name = st.text_input("Village Name")
+    f_name=st.text_input("Family Head Name")
+    category=st.text_input("Enter Category Name") 
+    if st.button("Button"):
+        v = dataset[
+        (dataset["Village Name"] == v_name) |
+        (dataset["Family Head Name"] == f_name) |
+        (dataset["Catagiry"] == category)]
+        st.write("Data")
+        st.dataframe(v)
