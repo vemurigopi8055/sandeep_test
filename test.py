@@ -16,7 +16,7 @@ if file:
         else:
             col_name = "_".join([i[0], i[1], i[2]])
         columns.append(col_name)
-    dataset = pd.read_excel("sandeep.xlsx", header=None)
+    dataset = pd.read_excel(file, header=None)
     dataset.drop(index=[0,1,2,3], axis = 0, inplace = True)
     dataset.columns = columns
     v_name = st.text_input("Village Name")
