@@ -249,9 +249,6 @@ h2, h3, h4 {
 </style>
 """, unsafe_allow_html=True)
 
-
-
-# --------- HEADER IMAGE (CENTERED) ---------
 try:
     header_image = Image.open("testing.png")
     col_left, col_center, col_right = st.columns([1, 2, 1])
@@ -262,9 +259,6 @@ except:
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-
-
-# --------- STATE HANDLERS ---------
 if "show_search" not in st.session_state:
     st.session_state.show_search = False
 
@@ -279,17 +273,9 @@ def show_count_ui():
     st.session_state.show_count = True
     st.session_state.show_search = False
 
-
-
-# --------- FILE UPLOADER ---------
 st.markdown("### 📤 Upload Excel File")
 file = st.file_uploader("Choose .xlsx file", type=["xlsx"])
 
-
-
-# ------------------------------------------------------
-#                    PROCESS FILE
-# ------------------------------------------------------
 if file:
 
     df = pd.read_excel(file, header=[1, 2, 3])
@@ -312,8 +298,6 @@ if file:
     dataset.drop(index=[0, 1, 2, 3], axis=0, inplace=True)
     dataset.columns = columns
 
-
-    # --------- ACTION BUTTONS ---------
     st.markdown("### ⚙️ Choose Action")
     col1, col2 = st.columns(2)
 
@@ -322,11 +306,6 @@ if file:
     with col2:
         st.button("📊 COUNT SUMMARY", on_click=show_count_ui, use_container_width=True)
 
-
-
-    # ------------------------------------------------------
-    #                    SEARCH SECTION
-    # ------------------------------------------------------
     if st.session_state.show_search:
         st.markdown("## 🔍 Search Records")
 
@@ -353,7 +332,7 @@ if file:
             caste_options.insert(0, "select")
             caste = st.selectbox("🧬 Caste", caste_options)
 
-        age = st.selectbox("🎂 Age Group", ["select", "below 18", "18 to 50", "above 50"])
+        age = st.selectbox("🎂 Age Group", ["select", "below 18", "18 to 50", "50 to 60", "above 60"])
 
         filter_list = [v_name, p_name, m_name, d_name, f_name, category, caste, age]
         doc_list = ["Village Name", "Panchayat/ Area", "Mandal", "District",
@@ -373,18 +352,15 @@ if file:
                             result = result[result["Age"] < 18]
                         elif filter_list[i] == "18 to 50":
                             result = result[(result["Age"] >= 18) & (result["Age"] < 50)]
+                        elif filter_list[i] == "50 to 60":
+                            result = result[(result["Age"] >= 50) & (result["Age"] < 60)]
                         else:
-                            result = result[result["Age"] >= 50]
+                            result = result[result["Age"] >= 60]
 
             st.success(f"✔ {len(result)} Records Found")
 
             st.dataframe(result, use_container_width=True, height=350)
 
-
-
-    # ------------------------------------------------------
-    #                    COUNT SECTION
-    # ------------------------------------------------------
     if st.session_state.show_count:
         st.markdown("## 📊 Count Summary")
 
